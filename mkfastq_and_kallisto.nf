@@ -3,6 +3,7 @@
 // Some required setup:
 // conda install -c bioconda bustools kallisto
 // wget http://cf.10xgenomics.com/misc/bamtofastq-1.2.0 && chmod u+x bamtofastq-1.2.0
+// ~/bin/nextflow run ~/Dropbox/mkfastq_and_kallisto.nf --bamfile chr_1.ready.bam
 
 
 params.kallisto_index = '/home/mstrasse/resources/Homo_sapiens.GRCh38.cdna.all.idx'
@@ -17,8 +18,17 @@ params.chemistry = '10xv3'
 params.barcode_whitelist = '/home/mstrasse/resources/3M-february-2018.txt'
 
 params.bustools_correct = true
-params.cpus = 8
-params.mem = '30G'
+
+
+params.cpus = 4
+params.mem = '10G'
+
+if (!params.outdir){
+  exit 1, "--outdir not set!"
+}
+if (!params.bamfile){
+  exit 1, "--bamfile not set!"
+}
 
 
 Channel
@@ -54,7 +64,7 @@ process mkfastq {
 
   script:
   """
-  /home/mstrasse/bamtofastq-1.2.0 input.bam out --reads-per-fastq 50000000 --nthreads ${params.cpus}
+  bamtofastq-1.2.0 input.bam out --reads-per-fastq 50000000 --nthreads ${params.cpus}
   """
 }
 
@@ -66,6 +76,8 @@ combined = r1files.merge(r2files)
 combined_flat = combined.flatten().collect()
 // combined_flat.subscribe onNext: { println it.name }, onComplete: { println 'Done' }
 // r1files.subscribe onNext: { println it.name }, onComplete: { println 'Done' }
+
+
 
 
  process kallisto {
@@ -92,7 +104,6 @@ combined_flat = combined.flatten().collect()
          $reads | tee kallisto.log
      """
  }
- 
  /*
  * Run BUSTools Correct / Sort on Kallisto Output
  */
