@@ -5,23 +5,14 @@
 // wget http://cf.10xgenomics.com/misc/bamtofastq-1.2.0 && chmod u+x bamtofastq-1.2.0
 // ~/bin/nextflow run ~/Dropbox/mkfastq_and_kallisto.nf --bamfile chr_1.ready.bam
 
+// checking input args
+if (!params.chemistry){
+  exit 1, "--chemistry not set!: 10xv3 or 10xv2"
+}
 
-params.kallisto_index = '/home/mstrasse/resources/Homo_sapiens.GRCh38.cdna.all.idx'
-params.kallisto_gene_map = '/home/mstrasse/resources/transcripts_to_genes.txt'
-
-// V2 chemistr
-// params.chemistry = '10xv2'
-// params.barcode_whitelist = '/home/mstrasse/resources/10xv2_whitelist.txt'
-
-// v3 chem
-params.chemistry = '10xv3'
-params.barcode_whitelist = '/home/mstrasse/resources/3M-february-2018.txt'
-
-params.bustools_correct = true
-
-
-params.cpus = 4
-params.mem = '10G'
+if (!(params.chemistry == '10xv2' or params.chemistry == '10xv3')){
+  exit 1, "--chemistrymust be either 10xv3 or 10xv2"
+}
 
 if (!params.outdir){
   exit 1, "--outdir not set!"
@@ -29,6 +20,24 @@ if (!params.outdir){
 if (!params.bamfile){
   exit 1, "--bamfile not set!"
 }
+
+
+params.kallisto_index = 'kallisto_resources/Homo_sapiens.GRCh38.cdna.all.idx'
+params.kallisto_gene_map = 'kallisto_resources/transcripts_to_genes.txt'
+
+if (params.chemistry == '10xv2'){
+  params.barcode_whitelist = 'kallisto_resources/3M-10xv2_whitelist.txt'
+}
+else{
+  params.barcode_whitelist = 'kallisto_resources/3M-february-2018.txt'
+}
+
+
+
+params.bustools_correct = true
+params.cpus = 4
+params.mem = '10G'
+
 
 
 Channel
