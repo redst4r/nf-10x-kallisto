@@ -78,8 +78,6 @@ combined_flat = combined.flatten().collect()
 // r1files.subscribe onNext: { println it.name }, onComplete: { println 'Done' }
 
 
-
-
  process kallisto {
      // label 'low_memory'
      // publishDir "${params.outdir}/kallisto/raw_bus", mode: 'copy'
@@ -109,7 +107,7 @@ combined_flat = combined.flatten().collect()
  */
  process bustools_correct_sort{
      // tag "$bus"
-     // publishDir "${params.outdir}/kallisto/sort_bus", mode: 'copy'
+     publishDir "${params.outdir}/kallisto/sort_bus", mode: 'copy'
 
      input:
      file bus from kallisto_bus_to_sort
@@ -123,14 +121,20 @@ combined_flat = combined.flatten().collect()
      if(params.bustools_correct) {
        correct = "bustools correct -w $whitelist -o ${bus}/output.corrected.bus ${bus}/output.bus"
        sort_file = "${bus}/output.corrected.bus"
+       // output.corrected.sort.bus is the only important output, so
+       // cleanup the intermediates
+       cleanup = "rm ${bus}/output.corrected.bus && rm ${bus}/output.bus"
      } else {
        correct = ""
        sort_file = "${bus}/output.bus"
+       cleanup = "rm ${bus}/output.bus"
+
      }
      """
      $correct
      mkdir -p tmp
      bustools sort -T tmp/ -t ${params.cpus} -m ${params.mem} -o ${bus}/output.corrected.sort.bus $sort_file
+     $cleanup
      """
  }
 
