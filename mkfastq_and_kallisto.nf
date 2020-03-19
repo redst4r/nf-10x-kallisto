@@ -10,7 +10,7 @@ if (!params.chemistry){
   exit 1, "--chemistry not set!: 10xv3 or 10xv2"
 }
 
-if (!(params.chemistry == '10xv2' or params.chemistry == '10xv3')){
+if (!(params.chemistry == '10xv2' || params.chemistry == '10xv3')){
   exit 1, "--chemistrymust be either 10xv3 or 10xv2"
 }
 

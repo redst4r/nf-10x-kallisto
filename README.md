@@ -37,6 +37,16 @@ Here's what will be contained in the output folder:
     │       ├── gene.barcodes.txt
     │       ├── gene.genes.txt
     │       └── gene.mtx
-    └── bustools_metrics
-        └── bus_output.json
+    ├── bustools_metrics
+    │   └── bus_output.json
+    └── sort_bus
+        └── bus_output
+            ├── matrix.ec
+            ├── output.corrected.sort.bus
+            ├── run_info.json
+            └── transcripts.txt
 ```
+
+Note that `kallisto/sort_bus/output.corrected.sort.bus` will be pretty big (a few GB)
+
+
