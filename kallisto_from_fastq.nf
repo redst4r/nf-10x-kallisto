@@ -20,20 +20,23 @@ if (!params.outdir){
   exit 1, "--outdir not set!"
 }
 
+RESOURCE_DIR = '/home/michi/mounts/TB4drive/kallisto_resources'
+// RESOURCE_DIR = '/run/media/michi/42506642-b470-4238-be14-bb0c303b3682/kallisto_resources'
 
-params.kallisto_index = '/run/media/michi/42506642-b470-4238-be14-bb0c303b3682/kallisto_resources/Homo_sapiens.GRCh38.cdna.all.idx'
-params.kallisto_gene_map = '/run/media/michi/42506642-b470-4238-be14-bb0c303b3682/kallisto_resources/transcripts_to_genes.txt'
+//params.kallisto_index = RESOURCE_DIR + '/Homo_sapiens.GRCh38.cdna.all.idx'
+//params.kallisto_gene_map = RESOURCE_DIR + '/transcripts_to_genes.txt'
 
-// params.kallisto_index = '/home/mstrasse/resources/Homo_sapiens.GRCh38.cdna.all.idx'
-// params.kallisto_gene_map = '/home/mstrasse/resources/transcripts_to_genes.txt'
+//params.kallisto_index = '/home/michi/COVID/Homo_sapiens_COVID.idx'
+//params.kallisto_gene_map = '/home/michi/COVID/transcripts_to_genes.txt'
 
-if (params.chemistry == '10xv2'){
-  // params.barcode_whitelist = '/home/mstrasse/resources/10xv2_whitelist.txt'
-  params.barcode_whitelist = '/run/media/michi/42506642-b470-4238-be14-bb0c303b3682/kallisto_resources/10xv2_whitelist.txt'
+if ((params.chemistry == '10xv2') && (!params.barcode_whitelist)){
+  println "warning, using default v2 barcode list"
+  params.barcode_whitelist = RESOURCE_DIR + '/10xv2_whitelist.txt'
 }
-else{
-  // params.barcode_whitelist = '/home/mstrasse/resources/3M-february-2018.txt'
-  params.barcode_whitelist = '/run/media/michi/42506642-b470-4238-be14-bb0c303b3682/kallisto_resources/3M-february-2018.txt'
+
+if ((params.chemistry == '10xv3') && (!params.barcode_whitelist)){
+  println "warning, using default v3 barcode list"
+  params.barcode_whitelist = RESOURCE_DIR + '/3M-february-2018.txt'
 }
 
 params.bustools_correct = true
