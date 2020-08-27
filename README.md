@@ -3,8 +3,8 @@
 This nextflow pipeline can be used to requantify 10x experiments (processed with
 cellranger) with kallisto.
 
-## Usage
-
+## mkfastq_and_kallisto
+### Usage
 ```
 nextflow run mkfastq_and_kallisto.nf \
    --bamfile <cellranger_bamfile>
@@ -15,14 +15,14 @@ nextflow run mkfastq_and_kallisto.nf \
    --outdir <...>
 ```
 
-## Steps:
+### Steps:
 1. `mkfastq` to turn the bam-file into fastqs
 2. `kallisto bus` to pseudo-align the reads
 3. `bustools correct` to correct the cell-barcodes and sort them
 4. `bustools count` for gene-wise and equivalence-wise counting of expression
 
 
-## Output
+### Output
 Here's what will be contained in the output folder:
 
 ```
@@ -49,4 +49,29 @@ Here's what will be contained in the output folder:
 
 Note that `kallisto/sort_bus/output.corrected.sort.bus` will be pretty big (a few GB)
 
+## kallisto_from_fastq.nf 
+### Usage
+Similar to mkfastq_and_kallisto, but starting from fastq files already
 
+```
+nextflow run fastq_and_kallisto.nf \
+   --readsglob <something_L00*_R{1,2}.fastq.gz> \
+   --outdir <directory> \
+   --chemistry <10xv2|10xv3> \
+```
+
+### Output
+Same as mkfastq_and_kallisto.nf
+
+
+## mkfastq.nf
+Just turns a 10x/cellranger bamfile into the fastqs. 
+
+### Usage
+```
+nextflow run mkfastq.nf \
+  --bamfile <.bam>\
+   --outdir <directory> \
+  --publish_mode <copy|symlink>
+```
+`--publish_mode copy`  creates copies of the files in outdir, `symlink` just links from the nextflow tmp-directory (to save space)
